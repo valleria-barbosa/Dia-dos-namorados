@@ -2,33 +2,35 @@ let slideIndex = 0;
 const slides = document.querySelectorAll('.slide-item');
 
 function mudarSlide(direcao) {
-    // 1. Pausa qualquer vídeo que esteja a dar antes de mudar de slide
+    // 1. Pausa o vídeo anterior antes de mudar
     pausarVideos();
 
-    // 2. Remove a classe 'active' do slide atual para o esconder
+    // 2. Esconde o slide atual
     slides[slideIndex].classList.remove('active');
 
-    // 3. Calcula o próximo índice do slide
+    // 3. Calcula o próximo índice
     slideIndex += direcao;
 
-    // Se passar do último slide, volta para o primeiro
     if (slideIndex >= slides.length) {
         slideIndex = 0;
     }
-    // Se for antes do primeiro slide, vai para o último
     if (slideIndex < 0) {
         slideIndex = slides.length - 1;
     }
 
-    // 4. Mostra o novo slide adicionando a classe 'active'
+    // 4. Mostra o novo slide
     slides[slideIndex].classList.add('active');
 
-    // 5. Se o novo slide for um vídeo, dá "play" automaticamente
+    // 5. CONFIGURAÇÃO DO VÍDEO:
     const videoAtual = slides[slideIndex].querySelector('video');
     if (videoAtual) {
-        videoAtual.play().catch(error => {
-            console.log("O navegador bloqueou o autoplay com som:", error);
-        });
+        // Garantimos que ele NÃO comece mudo
+        videoAtual.muted = false; 
+        
+        // Deixamos o vídeo pausado no início para o navegador liberar o som.
+        // Assim, sua namorada só precisa dar 1 clique no Play do vídeo para ouvir perfeitamente!
+        videoAtual.pause();
+        videoAtual.currentTime = 0;
     }
 }
 
@@ -37,7 +39,7 @@ function pausarVideos() {
         const video = slide.querySelector('video');
         if (video) {
             video.pause();
-            video.currentTime = 0; // Reinicia o vídeo para o início
+            video.currentTime = 0; 
         }
     });
 }
